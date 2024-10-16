@@ -14,10 +14,10 @@ type FoodHandler struct {
 	cfg *config.Config
 
 	foodService proto.RestaurantFoodClient
-	verify      verify.JWTVerifier
+	verify      *verify.JWTVerifier
 }
 
-func NewFoodHandler(cfg *config.Config, foodService proto.RestaurantFoodClient, verifier verify.JWTVerifier) *FoodHandler {
+func NewFoodHandler(cfg *config.Config, foodService proto.RestaurantFoodClient, verifier *verify.JWTVerifier) *FoodHandler {
 	return &FoodHandler{cfg: cfg, foodService: foodService, verify: verifier}
 }
 
@@ -87,6 +87,8 @@ func (h *FoodHandler) UpdateFood(c *fiber.Ctx) error {
 			"error", err)
 		return api.BadRequest(c)
 	}
+
+	food.Id = c.Params("id")
 
 	food, err = h.foodService.UpdateFood(c.Context(), food)
 	if err != nil {
@@ -191,6 +193,9 @@ func (h *FoodHandler) UpdateRestaurant(c *fiber.Ctx) error {
 		slog.Warn("Failed to parse body",
 			"error", err)
 	}
+
+	req.Id = c.Params("id")
+
 	restaurant, err := h.foodService.UpdateRestaurants(c.Context(), req)
 	if err != nil {
 		slog.Warn("Failed to update restaurant",
