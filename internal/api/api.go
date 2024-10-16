@@ -46,7 +46,17 @@ func ReturnError(c *fiber.Ctx, err error) error {
 }
 
 func ReturnResp(c *fiber.Ctx, resp *http.Response) error {
-	return c.Status(resp.StatusCode).SendStream(resp.Body)
+	body := new(bytes.Buffer)
+	_, err := body.ReadFrom(resp.Body)
+	if err != nil {
+		slog.Warn("Error reading response body",
+			"error", err)
+		return ReturnError(c, err)
+	}
+	c.Set(fiber.HeaderContentType, resp.Header.Get(fiber.HeaderContentType))
+	return c.
+		Status(resp.StatusCode).
+		SendStream(body)
 }
 
 func RedirectRequest(url string, c *fiber.Ctx) (*http.Response, error) {
