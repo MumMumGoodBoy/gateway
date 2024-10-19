@@ -22,3 +22,15 @@ func (h *AuthHandler) Login(c *fiber.Ctx) error {
 func (h *AuthHandler) Register(c *fiber.Ctx) error {
 	return api.HandleRedirect(h.cfg.AuthConfig.AuthServiceURL+"/auth/register", c)
 }
+
+func (h *AuthHandler) GetMe(c *fiber.Ctx) error {
+	return api.HandleRedirect(h.cfg.AuthConfig.AuthServiceURL+"/me", c)
+}
+
+func (h *AuthHandler) UpdateProfile(c *fiber.Ctx) error {
+	return api.HandleRedirect(h.cfg.AuthConfig.AuthServiceURL+"/me", c)
+}
+
+func (h *AuthHandler) ChangePassword(c *fiber.Ctx) error {
+	return api.HandleRedirect(h.cfg.AuthConfig.AuthServiceURL+"/me/password", c)
+}

@@ -128,6 +128,33 @@ func (h *FoodHandler) DeleteFood(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusNoContent)
 }
 
+func (h *FoodHandler) GetFoodsByRestaurantId(c *fiber.Ctx) error {
+	_, err := h.verify.Verify(api.GetAuthToken(c))
+	if err != nil {
+		slog.Warn("Failed to verify token",
+			"error", err,
+		)
+		return api.Unauthorized(c)
+	}
+	foods, err := h.foodService.GetFoodsByRestaurantId(c.Context(), &proto.RestaurantIdRequest{
+		Id: c.Params("id"),
+	})
+	if err != nil {
+		return api.ReturnError(c, err)
+	}
+
+	return c.JSON(foods)
+}
+
+func (h *FoodHandler) GetRestaurants(c *fiber.Ctx) error {
+	restaurants, err := h.foodService.GetRestaurants(c.Context(), new(proto.Empty))
+	if err != nil {
+		return api.ReturnError(c, err)
+	}
+
+	return c.JSON(restaurants)
+}
+
 func (h *FoodHandler) GetRestaurant(c *fiber.Ctx) error {
 	restaurant, err := h.foodService.GetRestaurantByRestaurantId(c.Context(), &proto.RestaurantIdRequest{
 		Id: c.Params("id"),
