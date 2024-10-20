@@ -1,26 +1,24 @@
 syntax = "proto3";
 option go_package = "github.com/MumMumGoodBoy/restaurant-food-service/proto";
+import "google/protobuf/empty.proto";
 
 package proto;
 
 service RestaurantFood {
   // Restaurant
-  rpc GetRestaurants (Empty) returns (GetRestaurantResponse) {}
+  rpc GetRestaurants (google.protobuf.Empty) returns (GetRestaurantResponse) {}
   rpc GetRestaurantByRestaurantId (RestaurantIdRequest) returns (Restaurant) {}
   rpc CreateRestaurant (CreateRestaurantRequest) returns (Restaurant) {}
   rpc UpdateRestaurants (Restaurant) returns (Restaurant) {}
-  rpc DeleteRestaurant (RestaurantIdRequest) returns (Empty) {}
+  rpc DeleteRestaurant (RestaurantIdRequest) returns (google.protobuf.Empty) {}
   //Food
   rpc GetFoodsByRestaurantId (RestaurantIdRequest) returns (GetFoodResponse) {}
   rpc GetFoodByFoodId (FoodIdRequest) returns (Food) {}
   rpc GetFoodsByFoodIds (FoodIdsRequest) returns (GetFoodResponse) {}
   rpc CreateFood (Food) returns (Food) {}
   rpc UpdateFood (Food) returns (Food) {}
-  rpc DeleteFood (FoodIdRequest) returns (Empty) {}
+  rpc DeleteFood (FoodIdRequest) returns (google.protobuf.Empty) {}
 }
-
-message Empty {}
-
 
 message Restaurant {
     string id =1;

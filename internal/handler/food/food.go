@@ -8,6 +8,7 @@ import (
 	"github.com/mummumgoodboy/gateway/internal/config"
 	"github.com/mummumgoodboy/gateway/proto"
 	"github.com/mummumgoodboy/verify"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type FoodHandler struct {
@@ -147,7 +148,7 @@ func (h *FoodHandler) GetFoodsByRestaurantId(c *fiber.Ctx) error {
 }
 
 func (h *FoodHandler) GetRestaurants(c *fiber.Ctx) error {
-	restaurants, err := h.foodService.GetRestaurants(c.Context(), new(proto.Empty))
+	restaurants, err := h.foodService.GetRestaurants(c.Context(), &emptypb.Empty{})
 	if err != nil {
 		return api.ReturnError(c, err)
 	}

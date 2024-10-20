@@ -51,5 +51,6 @@ func main() {
 
 	router.Apply(app)
 
+	log.Println("Gateway is running on port 3000")
 	app.Listen(":3000")
 }
