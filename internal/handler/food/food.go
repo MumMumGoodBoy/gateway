@@ -24,7 +24,7 @@ func NewFoodHandler(cfg *config.Config, foodService proto.RestaurantFoodClient, 
 
 func (h *FoodHandler) GetFood(c *fiber.Ctx) error {
 	food, err := h.foodService.GetFoodByFoodId(c.Context(), &proto.FoodIdRequest{
-		Id: c.Params("id"),
+		Id: c.Params("foodId"),
 	})
 	if err != nil {
 		return api.ReturnError(c, err)
@@ -58,11 +58,9 @@ func (h *FoodHandler) CreateFood(c *fiber.Ctx) error {
 
 	food, err = h.foodService.CreateFood(c.Context(), &proto.Food{
 		Name:         food.Name,
-		Price:        food.Price,
-		RestaurantId: c.Params("id"),
-		ImageUrl:     food.ImageUrl,
 		Description:  food.Description,
-		Id:           "",
+		Price:        food.Price,
+		RestaurantId: c.Params("restaurantId"),
 	})
 
 	if err != nil {
@@ -97,7 +95,7 @@ func (h *FoodHandler) UpdateFood(c *fiber.Ctx) error {
 		return api.BadRequest(c)
 	}
 
-	food.Id = c.Params("id")
+	food.Id = c.Params("foodId")
 
 	food, err = h.foodService.UpdateFood(c.Context(), food)
 	if err != nil {
@@ -126,7 +124,7 @@ func (h *FoodHandler) DeleteFood(c *fiber.Ctx) error {
 	}
 
 	_, err = h.foodService.DeleteFood(c.Context(), &proto.FoodIdRequest{
-		Id: c.Params("id"),
+		Id: c.Params("foodId"),
 	})
 	if err != nil {
 		slog.Warn("Failed to delete food",
@@ -138,15 +136,8 @@ func (h *FoodHandler) DeleteFood(c *fiber.Ctx) error {
 }
 
 func (h *FoodHandler) GetFoodsByRestaurantId(c *fiber.Ctx) error {
-	_, err := h.verify.Verify(api.GetAuthToken(c))
-	if err != nil {
-		slog.Warn("Failed to verify token",
-			"error", err,
-		)
-		return api.Unauthorized(c)
-	}
 	foods, err := h.foodService.GetFoodsByRestaurantId(c.Context(), &proto.RestaurantIdRequest{
-		Id: c.Params("id"),
+		Id: c.Params("restaurantId"),
 	})
 	if err != nil {
 		return api.ReturnError(c, err)
@@ -166,7 +157,7 @@ func (h *FoodHandler) GetRestaurants(c *fiber.Ctx) error {
 
 func (h *FoodHandler) GetRestaurant(c *fiber.Ctx) error {
 	restaurant, err := h.foodService.GetRestaurantByRestaurantId(c.Context(), &proto.RestaurantIdRequest{
-		Id: c.Params("id"),
+		Id: c.Params("restaurantId"),
 	})
 	if err != nil {
 		return api.ReturnError(c, err)
@@ -230,7 +221,7 @@ func (h *FoodHandler) UpdateRestaurant(c *fiber.Ctx) error {
 			"error", err)
 	}
 
-	req.Id = c.Params("id")
+	req.Id = c.Params("restaurantId")
 
 	restaurant, err := h.foodService.UpdateRestaurants(c.Context(), req)
 	if err != nil {
@@ -259,7 +250,7 @@ func (h *FoodHandler) DeleteRestaurant(c *fiber.Ctx) error {
 	}
 
 	_, err = h.foodService.DeleteRestaurant(c.Context(), &proto.RestaurantIdRequest{
-		Id: c.Params("id"),
+		Id: c.Params("restaurantId"),
 	})
 	if err != nil {
 		slog.Warn("Failed to delete restaurant",

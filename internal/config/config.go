@@ -4,6 +4,7 @@ type Config struct {
 	AuthConfig      AuthConfig
 	FoodConfig      FoodConfig
 	RecommendConfig RecommendConfig
+	ReviewConfig    ReviewConfig
 }
 
 type AuthConfig struct {
@@ -17,4 +18,8 @@ type FoodConfig struct {
 
 type RecommendConfig struct {
 	RecommendServiceAddr string `env:"RECOMMEND_SERVICE_ADDR"`
+}
+
+type ReviewConfig struct {
+	ReviewServiceAddr string `env:"REVIEW_SERVICE_ADDR"`
 }
