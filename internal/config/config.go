@@ -23,3 +23,7 @@ type RecommendConfig struct {
 type ReviewConfig struct {
 	ReviewServiceAddr string `env:"REVIEW_SERVICE_ADDR"`
 }
+
+type SearchConfig struct {
+	SearchServiceAddr string `env:"SEARCH_SERVICE_ADDR"`
+}
