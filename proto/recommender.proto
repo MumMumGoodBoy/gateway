@@ -1,11 +1,12 @@
 syntax = "proto3";
 option go_package = "github.com/MumMumGoodBoy/recommender/proto";
+import "google/protobuf/empty.proto";
 
 package proto;
 
 service RecommendService {
-    rpc AddEvent(AddEventReq) returns (Empty) {}
-    rpc RemoveEvent(RemoveEventReq) returns (Empty) {}
+    rpc AddEvent(AddEventReq) returns (google.protobuf.Empty) {}
+    rpc RemoveEvent(RemoveEventReq) returns (google.protobuf.Empty) {}
     rpc GetFoodRecommendations(GetRecommendationsRequest) returns (GetRecommendationsResponse) {}
 }
 
@@ -14,8 +15,6 @@ enum EventType {
     FAVORITE = 1;
     RATING = 2;
 }
-
-message Empty {}
 
 message AddEventReq {
     EventType event_type = 1;
