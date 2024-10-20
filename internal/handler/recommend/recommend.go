@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/mummumgoodboy/gateway/internal/api"
 	"github.com/mummumgoodboy/gateway/internal/config"
+	"github.com/mummumgoodboy/gateway/package/agg"
 	"github.com/mummumgoodboy/gateway/proto"
 	"github.com/mummumgoodboy/verify"
 )
@@ -72,5 +73,9 @@ func (h *RecommendHandler) GetRecommend(c *fiber.Ctx) error {
 		return api.InternalError(c)
 	}
 
-	return c.JSON(res.Foods)
+	foods := agg.SortBySlice(recommendFood.ItemIds, res.Foods, func(v *proto.Food) string {
+		return v.Id
+	})
+
+	return c.JSON(foods)
 }
