@@ -1,8 +1,9 @@
 package config
 
 type Config struct {
-	AuthConfig AuthConfig
-	FoodConfig FoodConfig
+	AuthConfig      AuthConfig
+	FoodConfig      FoodConfig
+	RecommendConfig RecommendConfig
 }
 
 type AuthConfig struct {
@@ -12,4 +13,8 @@ type AuthConfig struct {
 
 type FoodConfig struct {
 	FoodServiceAddr string `env:"FOOD_SERVICE_ADDR"`
+}
+
+type RecommendConfig struct {
+	RecommendServiceAddr string `env:"RECOMMEND_SERVICE_ADDR"`
 }

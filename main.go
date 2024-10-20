@@ -9,6 +9,7 @@ import (
 	"github.com/mummumgoodboy/gateway/internal/config"
 	"github.com/mummumgoodboy/gateway/internal/handler/auth"
 	"github.com/mummumgoodboy/gateway/internal/handler/food"
+	"github.com/mummumgoodboy/gateway/internal/handler/recommend"
 	"github.com/mummumgoodboy/gateway/internal/route"
 	"github.com/mummumgoodboy/gateway/proto"
 	"github.com/mummumgoodboy/verify"
@@ -39,12 +40,20 @@ func main() {
 	}
 	foodService := proto.NewRestaurantFoodClient(foodServiceConn)
 
+	recommendServiceConn, err := grpc.NewClient(cfg.RecommendConfig.RecommendServiceAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatal(err)
+	}
+	recommendService := proto.NewRecommendServiceClient(recommendServiceConn)
+
 	authHandler := auth.NewAuthHandler(&cfg)
 	foodHandler := food.NewFoodHandler(&cfg, foodService, verifier)
+	recommendHandler := recommend.NewRecommendHandler(&cfg, foodService, recommendService, verifier)
 
 	router := route.Route{
-		AuthHandler: authHandler,
-		FoodHandler: foodHandler,
+		AuthHandler:      authHandler,
+		FoodHandler:      foodHandler,
+		RecommendHandler: recommendHandler,
 	}
 
 	app := fiber.New()

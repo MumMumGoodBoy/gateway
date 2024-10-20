@@ -4,11 +4,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/mummumgoodboy/gateway/internal/handler/auth"
 	"github.com/mummumgoodboy/gateway/internal/handler/food"
+	"github.com/mummumgoodboy/gateway/internal/handler/recommend"
 )
 
 type Route struct {
-	AuthHandler *auth.AuthHandler
-	FoodHandler *food.FoodHandler
+	AuthHandler      *auth.AuthHandler
+	FoodHandler      *food.FoodHandler
+	RecommendHandler *recommend.RecommendHandler
 }
 
 func (r *Route) Apply(f fiber.Router) {
@@ -32,4 +34,7 @@ func (r *Route) Apply(f fiber.Router) {
 	restaurant.Put("/:id", r.FoodHandler.UpdateRestaurant)
 	restaurant.Delete("/:id", r.FoodHandler.DeleteRestaurant)
 	restaurant.Get("/:id/foods", r.FoodHandler.GetFoodsByRestaurantId)
+
+	foodRecommend := f.Group("/food-recommend")
+	foodRecommend.Get("/", r.RecommendHandler.GetRecommend)
 }
