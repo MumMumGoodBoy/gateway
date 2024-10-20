@@ -23,7 +23,6 @@ func (r *Route) Apply(f fiber.Router) {
 
 	food := f.Group("/food")
 	food.Get("/:id", r.FoodHandler.GetFood)
-	food.Post("/", r.FoodHandler.CreateFood)
 	food.Put("/:id", r.FoodHandler.UpdateFood)
 	food.Delete("/:id", r.FoodHandler.DeleteFood)
 
@@ -33,8 +32,10 @@ func (r *Route) Apply(f fiber.Router) {
 	restaurant.Post("/", r.FoodHandler.CreateRestaurant)
 	restaurant.Put("/:id", r.FoodHandler.UpdateRestaurant)
 	restaurant.Delete("/:id", r.FoodHandler.DeleteRestaurant)
-	restaurant.Get("/:id/foods", r.FoodHandler.GetFoodsByRestaurantId)
+
+	restaurant.Get("/:id/food", r.FoodHandler.GetFoodsByRestaurantId)
 
 	foodRecommend := f.Group("/food-recommend")
 	foodRecommend.Get("/", r.RecommendHandler.GetRecommend)
+	restaurant.Post("/:id/food", r.FoodHandler.CreateFood)
 }

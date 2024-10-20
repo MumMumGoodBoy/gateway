@@ -56,7 +56,15 @@ func (h *FoodHandler) CreateFood(c *fiber.Ctx) error {
 		return api.BadRequest(c)
 	}
 
-	food, err = h.foodService.CreateFood(c.Context(), food)
+	food, err = h.foodService.CreateFood(c.Context(), &proto.Food{
+		Name:         food.Name,
+		Price:        food.Price,
+		RestaurantId: c.Params("id"),
+		ImageUrl:     food.ImageUrl,
+		Description:  food.Description,
+		Id:           "",
+	})
+
 	if err != nil {
 		slog.Warn("Failed to create food",
 			"error", err)
