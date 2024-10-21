@@ -60,7 +60,7 @@ func (h *FoodHandler) CreateFood(c *fiber.Ctx) error {
 		Name:         food.Name,
 		Description:  food.Description,
 		Price:        food.Price,
-		RestaurantId: c.Params("restaurantId"),
+		RestaurantId: food.RestaurantId,
 	})
 
 	if err != nil {

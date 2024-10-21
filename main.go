@@ -57,7 +57,7 @@ func main() {
 	authHandler := auth.NewAuthHandler(&cfg)
 	foodHandler := food.NewFoodHandler(&cfg, foodService, verifier)
 	recommendHandler := recommend.NewRecommendHandler(&cfg, foodService, recommendService, verifier)
-	reviewHandler := review.NewReviewHandler(&cfg, reviewService, verifier)
+	reviewHandler := review.NewReviewHandler(&cfg, reviewService, foodService, verifier)
 	searchHandler := search.NewSearchHandler(&cfg)
 	router := route.Route{
 		AuthHandler:      authHandler,

@@ -13,11 +13,12 @@ import (
 type ReviewHandler struct {
 	cfg           *config.Config
 	reviewService proto.ReviewClient
+	foodService   proto.RestaurantFoodClient
 	verify        *verify.JWTVerifier
 }
 
-func NewReviewHandler(cfg *config.Config, reviewService proto.ReviewClient, verifier *verify.JWTVerifier) *ReviewHandler {
-	return &ReviewHandler{cfg: cfg, reviewService: reviewService, verify: verifier}
+func NewReviewHandler(cfg *config.Config, reviewService proto.ReviewClient, foodService proto.RestaurantFoodClient, verifier *verify.JWTVerifier) *ReviewHandler {
+	return &ReviewHandler{cfg: cfg, reviewService: reviewService, foodService: foodService, verify: verifier}
 }
 
 // CreateReview handles the creation of a review for a restaurant.
@@ -34,19 +35,25 @@ func (h *ReviewHandler) CreateReview(c *fiber.Ctx) error {
 		return api.BadRequest(c)
 	}
 	review.UserId = int32(claim.UserId)
-	review.RestaurantId = c.Params("restaurantId")
 
-	_, err = h.reviewService.CreateReview(c.Context(), review)
+	createdReview, err := h.reviewService.CreateReview(c.Context(), review)
 	if err != nil {
 		slog.Warn("Failed to create review", "error", err)
 		return api.ReturnError(c, err)
 	}
-
-	return c.SendStatus(fiber.StatusCreated)
+	return c.Status(201).JSON(createdReview)
 }
 
 // GetReviewsByRestaurantId retrieves all reviews for a specific restaurant.
 func (h *ReviewHandler) GetReviewsByRestaurantId(c *fiber.Ctx) error {
+	_, err := h.foodService.GetRestaurantByRestaurantId(c.Context(), &proto.RestaurantIdRequest{
+		Id: c.Params("restaurantId"),
+	})
+	if err != nil {
+		slog.Warn("Failed to get restaurant", "error", err)
+		return api.ReturnError(c, err)
+	}
+
 	response, err := h.reviewService.GetReviewsByRestaurantId(c.Context(), &proto.GetReviewsRequest{
 		RestaurantId: c.Params("restaurantId"),
 	})
@@ -126,11 +133,17 @@ func (h *ReviewHandler) AddFavoriteFood(c *fiber.Ctx) error {
 		slog.Warn("Failed to verify token", "error", err)
 		return api.Unauthorized(c)
 	}
-
 	foodId := c.Params("foodId")
+	food, err := h.foodService.GetFoodByFoodId(c.Context(), &proto.FoodIdRequest{
+		Id: foodId,
+	})
+	if err != nil {
+		return api.ReturnError(c, err)
+	}
 	_, err = h.reviewService.AddFavoriteFood(c.Context(), &proto.AddFavoriteFoodRequest{
-		UserId: int32(claim.UserId),
-		FoodId: foodId,
+		UserId:       int32(claim.UserId),
+		FoodId:       foodId,
+		RestaurantId: food.RestaurantId,
 	})
 	if err != nil {
 		slog.Warn("Failed to add favorite food", "error", err)
@@ -149,9 +162,16 @@ func (h *ReviewHandler) RemoveFavoriteFood(c *fiber.Ctx) error {
 	}
 
 	foodId := c.Params("foodId")
+	food, err := h.foodService.GetFoodByFoodId(c.Context(), &proto.FoodIdRequest{
+		Id: foodId,
+	})
+	if err != nil {
+		return api.ReturnError(c, err)
+	}
 	_, err = h.reviewService.RemoveFavoriteFood(c.Context(), &proto.RemoveFavoriteFoodRequest{
-		UserId: int32(claim.UserId),
-		FoodId: foodId,
+		UserId:       int32(claim.UserId),
+		FoodId:       foodId,
+		RestaurantId: food.RestaurantId,
 	})
 	if err != nil {
 		slog.Warn("Failed to remove favorite food", "error", err)
@@ -176,6 +196,15 @@ func (h *ReviewHandler) GetFavoriteFoodsByUserId(c *fiber.Ctx) error {
 		slog.Warn("Failed to retrieve favorite foods", "error", err)
 		return api.ReturnError(c, err)
 	}
-
-	return c.JSON(response.FoodIds)
+	foodIds := []string{}
+	for _, food := range response.FavoriteFoods {
+		foodIds = append(foodIds, food.FoodId)
+	}
+	foods, err := h.foodService.GetFoodsByFoodIds(c.Context(), &proto.FoodIdsRequest{
+		Ids: foodIds,
+	})
+	if err != nil {
+		return api.ReturnError(c, err)
+	}
+	return c.JSON(foods)
 }

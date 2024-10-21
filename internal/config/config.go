@@ -18,7 +18,7 @@ type FoodConfig struct {
 }
 
 type RecommendConfig struct {
-	RecommendServiceAddr string `env:"RECOMMEND_SERVICE_ADDR"`
+	RecommendServiceAddr string `env:"RECOMMENDATION_SERVICE_ADDR"`
 }
 
 type ReviewConfig struct {

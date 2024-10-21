@@ -27,6 +27,7 @@ func (r *Route) Apply(f fiber.Router) {
 
 	food := f.Group("/food")
 	food.Get("/:foodId", r.FoodHandler.GetFood)
+	food.Post("/", r.FoodHandler.CreateFood)
 	food.Put("/:foodId", r.FoodHandler.UpdateFood)
 	food.Delete("/:foodId", r.FoodHandler.DeleteFood)
 
@@ -36,18 +37,12 @@ func (r *Route) Apply(f fiber.Router) {
 	restaurant.Post("/", r.FoodHandler.CreateRestaurant)
 	restaurant.Put("/:restaurantId", r.FoodHandler.UpdateRestaurant)
 	restaurant.Delete("/:restaurantId", r.FoodHandler.DeleteRestaurant)
-
-	restaurant.Get("/:restaurantId/food", r.FoodHandler.GetFoodsByRestaurantId)
-
-	foodRecommend := f.Group("/food-recommend")
-	foodRecommend.Get("/", r.RecommendHandler.GetRecommend)
-	restaurant.Post("/:restaurantId/food", r.FoodHandler.CreateFood)
-
-	restaurant.Post("/:restaurantId/review", r.ReviewHandler.CreateReview)
-	restaurant.Get("/:restaurantId/review", r.ReviewHandler.GetReviewsByRestaurantId)
+	restaurant.Get("/:restaurantId/foods", r.FoodHandler.GetFoodsByRestaurantId)
+	restaurant.Get("/:restaurantId/reviews", r.ReviewHandler.GetReviewsByRestaurantId)
 
 	review := f.Group("/review")
 	review.Get("/:reviewId", r.ReviewHandler.GetReview)
+	review.Post("/", r.ReviewHandler.CreateReview)
 	review.Put("/:reviewId", r.ReviewHandler.UpdateReview)
 	review.Delete("/:reviewId", r.ReviewHandler.DeleteReview)
 
@@ -55,6 +50,9 @@ func (r *Route) Apply(f fiber.Router) {
 	favorite.Post("/:foodId", r.ReviewHandler.AddFavoriteFood)
 	favorite.Delete("/:foodId", r.ReviewHandler.RemoveFavoriteFood)
 	favorite.Get("/", r.ReviewHandler.GetFavoriteFoodsByUserId)
+
+	foodRecommend := f.Group("/food-recommend")
+	foodRecommend.Get("/", r.RecommendHandler.GetRecommend)
 
 	search := f.Group("search")
 	search.Get("/foods", r.SearchHandler.SearchFoods)
