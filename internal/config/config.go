@@ -5,6 +5,7 @@ type Config struct {
 	FoodConfig      FoodConfig
 	RecommendConfig RecommendConfig
 	ReviewConfig    ReviewConfig
+	SearchConfig    SearchConfig
 }
 
 type AuthConfig struct {

@@ -6,6 +6,7 @@ import (
 	"github.com/mummumgoodboy/gateway/internal/handler/food"
 	"github.com/mummumgoodboy/gateway/internal/handler/recommend"
 	"github.com/mummumgoodboy/gateway/internal/handler/review"
+	"github.com/mummumgoodboy/gateway/internal/handler/search"
 )
 
 type Route struct {
@@ -13,6 +14,7 @@ type Route struct {
 	FoodHandler      *food.FoodHandler
 	RecommendHandler *recommend.RecommendHandler
 	ReviewHandler    *review.ReviewHandler
+	SearchHandler    *search.SearchHandler
 }
 
 func (r *Route) Apply(f fiber.Router) {
@@ -53,4 +55,8 @@ func (r *Route) Apply(f fiber.Router) {
 	favorite.Post("/:foodId", r.ReviewHandler.AddFavoriteFood)
 	favorite.Delete("/:foodId", r.ReviewHandler.RemoveFavoriteFood)
 	favorite.Get("/", r.ReviewHandler.GetFavoriteFoodsByUserId)
+
+	search := f.Group("search")
+	search.Get("/foods", r.SearchHandler.SearchFoods)
+	search.Get("/restaurants", r.SearchHandler.SearchRestaurants)
 }

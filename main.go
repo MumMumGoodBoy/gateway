@@ -11,6 +11,7 @@ import (
 	"github.com/mummumgoodboy/gateway/internal/handler/food"
 	"github.com/mummumgoodboy/gateway/internal/handler/recommend"
 	"github.com/mummumgoodboy/gateway/internal/handler/review"
+	"github.com/mummumgoodboy/gateway/internal/handler/search"
 	"github.com/mummumgoodboy/gateway/internal/route"
 	"github.com/mummumgoodboy/gateway/proto"
 	"github.com/mummumgoodboy/verify"
@@ -57,12 +58,13 @@ func main() {
 	foodHandler := food.NewFoodHandler(&cfg, foodService, verifier)
 	recommendHandler := recommend.NewRecommendHandler(&cfg, foodService, recommendService, verifier)
 	reviewHandler := review.NewReviewHandler(&cfg, reviewService, verifier)
-
+	searchHandler := search.NewSearchHandler(&cfg)
 	router := route.Route{
 		AuthHandler:      authHandler,
 		FoodHandler:      foodHandler,
 		RecommendHandler: recommendHandler,
 		ReviewHandler:    reviewHandler,
+		SearchHandler:    searchHandler,
 	}
 
 	app := fiber.New()
