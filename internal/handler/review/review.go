@@ -54,8 +54,29 @@ func (h *ReviewHandler) GetReviewsByRestaurantId(c *fiber.Ctx) error {
 		return api.ReturnError(c, err)
 	}
 
-	response, err := h.reviewService.GetReviewsByRestaurantId(c.Context(), &proto.GetReviewsRequest{
+	response, err := h.reviewService.GetReviewsByRestaurantId(c.Context(), &proto.GetReviewsByRestaurantRequest{
 		RestaurantId: c.Params("restaurantId"),
+	})
+	if err != nil {
+		slog.Warn("Failed to retrieve reviews", "error", err)
+		return api.ReturnError(c, err)
+	}
+
+	return c.JSON(response.Reviews)
+}
+
+// GetReviewsByFoodId retrieves all reviews for a specific restaurant.
+func (h *ReviewHandler) GetReviewsByFoodId(c *fiber.Ctx) error {
+	_, err := h.foodService.GetFoodByFoodId(c.Context(), &proto.FoodIdRequest{
+		Id: c.Params("foodId"),
+	})
+	if err != nil {
+		slog.Warn("Failed to get food", "error", err)
+		return api.ReturnError(c, err)
+	}
+
+	response, err := h.reviewService.GetReviewsByFoodId(c.Context(), &proto.GetReviewsByFoodRequest{
+		FoodId: c.Params("foodId"),
 	})
 	if err != nil {
 		slog.Warn("Failed to retrieve reviews", "error", err)

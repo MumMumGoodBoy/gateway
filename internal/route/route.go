@@ -30,6 +30,7 @@ func (r *Route) Apply(f fiber.Router) {
 	food.Post("/", r.FoodHandler.CreateFood)
 	food.Put("/:foodId", r.FoodHandler.UpdateFood)
 	food.Delete("/:foodId", r.FoodHandler.DeleteFood)
+	food.Get("/:foodId/reviews", r.ReviewHandler.GetReviewsByFoodId)
 
 	restaurant := f.Group("/restaurant")
 	restaurant.Get("/", r.FoodHandler.GetRestaurants)
