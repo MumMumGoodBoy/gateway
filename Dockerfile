@@ -21,7 +21,7 @@ RUN make generate
 
 RUN go build -o myapp .
 
-FROM gcr.io/distroless/base-debian10
+FROM debian:bullseye-slim
 
 COPY --from=builder /app/myapp /myapp
 
