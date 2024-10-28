@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["protoc"]
+aptPkgs = ["protobuf"]
 
 [phases.build]
 cmds = ["make generate", "go build -o out"]
