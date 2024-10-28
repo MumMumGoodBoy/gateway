@@ -1,4 +1,5 @@
 [phases.setup]
+nixPkgs = ["...", "unzip"]
 cmds = [
     "curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v25.1/protoc-25.1-linux-aarch_64.zip",
     "unzip protoc-25.1-linux-aarch_64.zip -d $HOME/.local",
