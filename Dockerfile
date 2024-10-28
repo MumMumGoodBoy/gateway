@@ -23,8 +23,12 @@ RUN go build -o myapp .
 
 FROM debian:bullseye-slim
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY --from=builder /app/myapp /myapp
 
-EXPOSE 8080
+EXPOSE 3000
 
 CMD ["/myapp"]
