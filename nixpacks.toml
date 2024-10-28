@@ -1,5 +1,5 @@
 [phases.setup]
-aptPkgs = ["protobuf"]
+aptPkgs = ["protobuf-compiler"]
 
 [phases.build]
 cmds = ["make generate", "go build -o out"]
