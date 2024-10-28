@@ -1,2 +1,5 @@
+[phases.setup]
+nixPkgs = ["protoc"]
+
 [phases.build]
 cmds = ["make generate", "go build -o out"]
