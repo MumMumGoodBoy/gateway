@@ -77,8 +77,8 @@ message AddFavoriteFoodRequest {
 
 message RemoveFavoriteFoodRequest {
     int32 user_id = 1;
-    string food_id = 2; 
-    string restaurant_id = 3;   
+    string food_id = 2;
+    string restaurant_id = 3;
 }
 
 message GetFavoriteFoodsByUserIDRequest {
