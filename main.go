@@ -5,6 +5,7 @@ import (
 
 	"github.com/caarlos0/env/v11"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 	"github.com/mummumgoodboy/gateway/internal/config"
 	"github.com/mummumgoodboy/gateway/internal/handler/auth"
@@ -67,7 +68,13 @@ func main() {
 		SearchHandler:    searchHandler,
 	}
 
+	corsConfig := cors.Config{
+		AllowOrigins: cfg.CORSConfig.AllowedOrigins,
+	}
+
 	app := fiber.New()
+
+	app.Use(cors.New(corsConfig))
 
 	router.Apply(app)
 

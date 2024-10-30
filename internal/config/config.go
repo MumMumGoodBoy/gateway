@@ -6,6 +6,11 @@ type Config struct {
 	RecommendConfig RecommendConfig
 	ReviewConfig    ReviewConfig
 	SearchConfig    SearchConfig
+	CORSConfig      CORSConfig
+}
+
+type CORSConfig struct {
+	AllowedOrigins string `env:"CORS_ALLOWED_ORIGINS"`
 }
 
 type AuthConfig struct {
